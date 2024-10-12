@@ -1,64 +1,37 @@
 const express = require("express");
 const app = express();
+const connectDB=require("./config/database")
+const User=require("./scheme/model")
 
-// app.use("/",(req,res)=>{
-//   res.send("This is main location")
-// })
 
-// app.get("/user",(req,res)=>{
-//   res.send({"Firstname":"Ratan","LastName":"Tata"})
-// })
+app.post("/signup",async (req,res)=>{
+    const user=new User({
+      firstname:"Virat ",
+      lastname:"Kohli",
+      emailid:"virat@kohli.com",
+      pass:"Kohli17@gamil.com"
 
-// app.post("/user",(req,res)=>{
-//   res.send("This is post request")
-// })
+    })
+  
 
-// app.delete("/user",(req,res)=>{
-//   res.send("This is delete http method method")
-// })
-
-// app.use(
-//   "/user",[
-//   (req, res, next) => {
-//     // console.log(req.params.userid);
-//     console.log("Response 1");
-
-//     next();
-//   },
-//   (req, res, next) => {
-//     console.log("Response 2");
-
-//     next();
-//   }],
-//   (req,res,next)=>{
-//     console.log("Response 3");
-//     res.send("Response 3")
+    try{
+      await user.save()
+      res.send("user add to database")
+    }catch(err){
+    res.status(404).send("Error occur during load data"+err.message)
+    }
     
-//   },
-//   (req,res,next)=>{
-//     console.log("Response 4");
-//     res.send("Response 4")
-    
-//   }
-
-// );
-
-app.use("/user",(req,res,next)=>{
-  console.log("Response 1");
-  next()
+})
+connectDB()
+.then(()=>{
+    console.log("Database connection made sucessfully..!");
+    app.listen(3000, () => {
+      console.log("Application start a port 3000");
+    });
+})
+.catch((err)=>{
+    console.error("Error Occur in Database Connection"+err.message);
 })
 
-app.use("/user",(req,res,next)=>{
-  console.log("Response 2");
- 
-  next();
-},
-(req,res,next)=>{
-  console.log("Response 3");
-  res.send("Response 3")
-     
-})
 
-app.listen(3000, () => {
-  console.log("Application start a port 3000");
-});
+
